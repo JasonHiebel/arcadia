@@ -11,7 +11,7 @@
 	</target>
 
 	<!-- Target: compile -->
-	<target name = "compile" description = "Compiles the core, experiment, and test packages">
+	<target name = "compile" depends = "clean" description = "Compiles the core, experiment, and test packages">
 		<mkdir dir = "${bin}"/>
 		<javac sourcepath  = ""
 		       srcdir      = "${src}"
