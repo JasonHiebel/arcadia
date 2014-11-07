@@ -11,6 +11,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class Arcadia extends JPanel implements KeyListener, Runnable {
 	private final BufferedImage buffer;
 	private final Queue<Overlay> overlays;
