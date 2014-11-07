@@ -16,7 +16,7 @@ import java.util.List;
 public class IntroGame extends Game {
 	private final Image cover;
 	private final SelectionList<Slide> slides;
-	private int current;
+	private final Selection<Slide> selection;
 	
 	private long ticks;
 	private final Tweener pulse;
@@ -54,7 +54,8 @@ public class IntroGame extends Game {
 		this.slides.add(new SkyhookSlide());
 		this.slides.add(new GoodbyeSlide());
 		
-		this.current = 0;
+		this.selection = this.slides.selection();
+		
 		this.ticks = 0;
 		this.pulse = new SinTweener(0.3, 1.0);	
 	}
@@ -82,23 +83,19 @@ public class IntroGame extends Game {
 		g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
 		ticks += 1;
-		slides.current().tick(g2d, i, s);
+		selection.current().tick(g2d, i, s);
 		
-		if(ticks > 15 && i.pressed(R)) { slides.next();     ticks = 0; }
-		if(ticks > 15 && i.pressed(L)) { slides.previous(); ticks = 0; }
+		if(ticks > 15 && i.pressed(R)) { selection.next();     ticks = 0; }
+		if(ticks > 15 && i.pressed(L)) { selection.previous(); ticks = 0; }
 		
 		pulse.tick(0.025);
 		
 		g2d.setColor(new Color((float)pulse.value(), 0.0f, 0.0f, 1.0f));
-		if(slides.currentIndex() == 0) { 
-			g2d.setColor(new Color(0.3f, 0.0f, 0.0f, 1.0f));
-		}
+		if(!selection.hasPrevious()) { g2d.setColor(new Color(0.3f, 0.0f, 0.0f, 1.0f)); }
 		L.draw(g2d, WIDTH - 100, HEIGHT - 50, 30, 30);
 		
 		g2d.setColor(new Color((float)pulse.value(), 0.0f, 0.0f, 1.0f));
-		if(slides.currentIndex() == slides.size() - 1) { 
-			g2d.setColor(new Color(0.3f, 0.0f, 0.0f, 1.0f));
-		}
+		if(!selection.hasNext()) { g2d.setColor(new Color(0.3f, 0.0f, 0.0f, 1.0f)); }
 		R.draw(g2d, WIDTH -  50, HEIGHT - 50, 30, 30);
 	}
 	

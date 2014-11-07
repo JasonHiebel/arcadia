@@ -17,9 +17,11 @@ import static arcadia.Button.*;
  *
  */
 public class SelectOverlay extends Overlay {
-	private final Queue<Overlay> overlays;
+	private final Queue<Overlay>      overlays;
 	private final SelectionList<Game> games;
-	private Tweener tweener;
+	private final Selection<Game>     selection;
+	
+	private       Tweener tweener;
 	private final Tweener pulse;
 	
 	class SinTweener extends Tweener {
@@ -39,9 +41,10 @@ public class SelectOverlay extends Overlay {
 		
 	public SelectOverlay(Queue<Overlay> overlays, Game... games) {
 		super(true, true);
-		this.overlays = overlays;
-		this.games = new SelectionList<>(Arrays.asList(games));
-		this.pulse = new SinTweener(0.3, 1.0);	
+		this.overlays  = overlays;
+		this.games     = new SelectionList<>(Arrays.asList(games));
+		this.selection = this.games.selection();
+		this.pulse     = new SinTweener(0.3, 1.0);	
 	}
 	
 	public synchronized void update(Set<Integer> pressed) {
@@ -52,17 +55,17 @@ public class SelectOverlay extends Overlay {
 		else {
 			GameInput input = new GameInput(pressed);
 			if(input.pressed(S)) { overlays.add(new CreditsOverlay(overlays)); }
-			
-			if(input.pressed(Button.L) && !games.firstSelected()) { 
-				games.previous(); 
+				
+			if(input.pressed(L) && selection.hasPrevious()) { 
+				selection.previous(); 
 				tweener = new LinearTweener(-864 - 40, 0); }
-			if(input.pressed(Button.R) && !games.lastSelected()) { 
-				games.next();
+			if(input.pressed(R) && selection.hasNext()) { 
+				selection.next();
 				tweener = new LinearTweener(+864 + 40, 0);
 			}
-			if(input.pressed(Button.A)) {
+			if(input.pressed(A)) {
 				pressed.remove(KeyEvent.VK_Z);
-				overlays.add(new GameOverlay(overlays, games.current()));
+				overlays.add(new GameOverlay(overlays, selection.current()));
 			}
 		}
 	}
@@ -71,59 +74,62 @@ public class SelectOverlay extends Overlay {
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, WIDTH, HEIGHT);
 		
-		int[] xCoord = { 
-			(WIDTH - 864) / 2 - 864 - 40,
-			(WIDTH - 864) / 2,
-			(WIDTH - 864) / 2 + 864 + 40
-		};
-		for(int x = 0; x <= 2; x += 1) {
-			int c = games.currentIndex() - 1 + x;
-			if(c < 0 || games.size() <= c) { continue; }
-						
-			int xpos = xCoord[x];
-			if(tweener != null) { xpos += tweener.value(); }
+		// draw game covers
+		List<Game> window = new ArrayList<Game>();
+		window.add(selection.current());
+		
+		Selection<Game> prev = selection.copy();
+		window.add(0, prev.previous());
+		window.add(0, prev.previous());
+		
+		Selection<Game> next = selection.copy();
+		window.add(next.next());
+		window.add(next.next());
+		
+		
+		final int xBase   = (WIDTH - 864) / 2;
+		final int xOffset = 864 + 40;
+		
+		
+		for(int x = 0; x < 5; x += 1) {
+			int xPos = xBase + (x - 2) * xOffset;
+			if(tweener != null) { xPos += tweener.value(); }
 			
-			g2d.drawImage(games.get(c).cover(), xpos, 20, xpos + 864, 20 + 486, 0, 0, 1024, 576, null);
+			Game g = window.get(x);
+			if(g != null) {
+				g2d.drawImage(
+					g.cover(),
+					xPos, 20, xPos + 864, 20 + 486,
+					0, 0, WIDTH, HEIGHT,
+					null
+				);
+			}
 		}
-		
-		pulse.tick(0.025);
-		
+
+		// draw interface		
 		g2d.setColor(new Color(0.0f, 0.3f, 0.3f, 1.0f));
-		g2d.setStroke(new BasicStroke(2.0f));
-		//g2d.drawLine(50, HEIGHT - 35, (WIDTH - 30) / 2, HEIGHT - 35);
-		//g2d.drawLine((WIDTH - 30) / 2 + 30, HEIGHT - 35, WIDTH - 50, HEIGHT - 35);
-		//g2d.drawLine(WIDTH / 2, HEIGHT - 51, WIDTH / 2, HEIGHT - 70);
 		g2d.setStroke(new BasicStroke(10.0f));
 		g2d.draw(new RoundRectangle2D.Double((WIDTH - 864) / 2, 20, 864, 486, 10, 10));
 		
 		g2d.setColor(new Color(0.0f, (float)pulse.value(), (float)pulse.value(), 1.0f));
-		if(games.currentIndex() == 0) { 
-			g2d.setColor(new Color(0.0f, 0.3f, 0.3f, 1.0f));
-		}
-		L.draw(g2d,          420     , HEIGHT - 50, 30, 30);
+		g2d.setStroke(new BasicStroke(2.0f));
+		if(!selection.hasPrevious()) { g2d.setColor(new Color(0.0f, 0.3f, 0.3f, 1.0f)); }
+		L.draw(g2d, 420, HEIGHT - 50, 30, 30);
 		
 		g2d.setColor(new Color(0.0f, (float)pulse.value(), (float)pulse.value(), 1.0f));
-		if(games.currentIndex() == games.size() - 1) { 
-			g2d.setColor(new Color(0.0f, 0.3f, 0.3f, 1.0f));
-		}
-		R.draw(g2d,  WIDTH - 450     , HEIGHT - 50, 30, 30);
+		g2d.setStroke(new BasicStroke(2.0f));
+		if(!selection.hasNext()) { g2d.setColor(new Color(0.0f, 0.3f, 0.3f, 1.0f)); }
+		R.draw(g2d, WIDTH - 450, HEIGHT - 50, 30, 30);
 		
 		g2d.setColor(new Color(0.0f, (float)pulse.value(), (float)pulse.value(), 1.0f));
-		A.draw(g2d, (WIDTH -  30) / 2, HEIGHT - 50, 30, 30);
+		A.draw(g2d, (WIDTH - 30) / 2, HEIGHT - 50, 30, 30);
+		S.draw(g2d, WIDTH - 50, HEIGHT - 50, 30, 30);
 		
 		g2d.setColor(Color.CYAN);
 		new SkyhookFont(20).draw(g2d, 20, HEIGHT - 45, "Arcadia");
 		new SkyhookFont(20).draw(g2d, WIDTH - 160, HEIGHT - 45, "Credit");
 		
-		g2d.setColor(new Color(0.0f, (float)pulse.value(), (float)pulse.value(), 1.0f));
-		S.draw(g2d, WIDTH - 50, HEIGHT - 50, 30, 30);
-		
-		/*			
-		g2d.setColor(Color.WHITE);
-		g2d.fillRect(358,  66, 308,   6);
-		g2d.fillRect(358,  66,   6, 178);
-		g2d.fillRect(358, 238, 308,   6);
-		g2d.fillRect(660,  66,   6, 178);
-		*/
+		// update
+		pulse.tick(0.025);
 	}
 }
