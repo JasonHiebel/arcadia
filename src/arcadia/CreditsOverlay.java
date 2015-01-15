@@ -2,13 +2,13 @@ package arcadia;
 
 import arcadia.util.*;
 import static arcadia.Game.*;
+import static arcadia.Button.*;
 
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
 
-import static arcadia.Button.*;
 
 /**
  *

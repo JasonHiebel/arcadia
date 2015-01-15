@@ -106,10 +106,7 @@ public class SelectOverlay extends Overlay {
 			}
 		}
 
-		// draw interface		
-		g2d.setColor(new Color(0.0f, 0.3f, 0.3f, 1.0f));
-		g2d.setStroke(new BasicStroke(10.0f));
-		g2d.draw(new RoundRectangle2D.Double((WIDTH - 864) / 2, 20, 864, 486, 10, 10));
+		// draw interface
 		
 		g2d.setColor(new Color(0.0f, (float)pulse.value(), (float)pulse.value(), 1.0f));
 		g2d.setStroke(new BasicStroke(2.0f));

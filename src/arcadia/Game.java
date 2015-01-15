@@ -8,5 +8,6 @@ public abstract class Game {
 	public static final int HEIGHT = 576;
 
 	public abstract void tick(Graphics2D graphics, Input input, Sound sound);
+	public abstract void reset();
 	public abstract Image cover();
 }
