@@ -4,7 +4,8 @@ providing a uniform set of constraints for interacting with graphics, input,
 and sound.
 
 ## Keybindings ##
-Player 1 uses WASD as a D-Pad, and `\``, `1`, `2` as `A`, `B`, `C` respectively.
+Player 1 uses WASD as a D-Pad, and `` ` ``, `1`, `2` as `A`, `B`, `C` 
+respectively.
 
 Player 2 uses the arrow keys as a D-Pad, and `,`, `.`, `/` as `A`, `B`, `C` 
 respectively.
