@@ -4,9 +4,10 @@ providing a uniform set of constraints for interacting with graphics, input,
 and sound.
 
 ## Keybindings ##
-<table>
-<b><tr><td>Button</td><td>Player 1</td><td>Player 2</td></tr></b>
-</table>
+Player 1 uses WASD as a D-Pad, and `\``, `1`, `2` as `A`, `B`, `C` respectively.
+
+Player 2 uses the arrow keys as a D-Pad, and `,`, `.`, `/` as `A`, `B`, `C` 
+respectively.
 
 ## Getting Started ##
 In order to write a game for the Arcadia system, your main class must extend
