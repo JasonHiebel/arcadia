@@ -25,14 +25,15 @@ public class GameOverlay extends Overlay {
 	}
 	
 	public synchronized void update(Set<Integer> pressed) {
-		GameInput input = new GameInput(pressed);
+		GameInput p1 = new GameInput(pressed, GameInput.p1keycodes);
+		GameInput p2 = new GameInput(pressed, GameInput.p2keycodes);
 
-		if(input.pressed(S)) {
-			pressed.remove(GameInput.keycode(S));
-			overlays.add(new PauseOverlay(overlays, game.cover()));
+		if(p1.pressed(S)) {
+			pressed.remove(GameInput.p1keycodes.get(S));
+			overlays.add(new PauseOverlay(overlays, game.banner()));
 		}
 		else {
-			game.tick(buffer.createGraphics(), input, null);
+			game.tick(buffer.createGraphics(), p1, p2, null);
 		}
 	}
 		

@@ -14,7 +14,7 @@ import static arcadia.Button.*;
 import java.util.List;
 
 public class IntroGame extends Game {
-	private final Image cover;
+	private final Image banner;
 	private final SelectionList<Slide> slides;
 	private final Selection<Slide> selection;
 	
@@ -22,28 +22,29 @@ public class IntroGame extends Game {
 	private final Tweener pulse;
 		
 	public IntroGame() {
-		this.cover = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		this.banner = new BufferedImage(512, 128, BufferedImage.TYPE_INT_ARGB);
 		{
-			Graphics2D g2d = ((BufferedImage)cover).createGraphics();
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON  );
-	    	g2d.setRenderingHint(RenderingHints.KEY_RENDERING,    RenderingHints.VALUE_RENDER_QUALITY);
+			Graphics2D g = ((BufferedImage)banner).createGraphics();
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON  );
+	    	g.setRenderingHint(RenderingHints.KEY_RENDERING,    RenderingHints.VALUE_RENDER_QUALITY);
 	    	
-			g2d.setColor(new Color(0.1f, 0.1f, 0.1f, 1.0f));
-			g2d.fillRect(0, 0, WIDTH, HEIGHT);
+			g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+			g.fillRect(0, 0, 512, 128);
 			
-			g2d.setColor(Color.RED);
-			new SkyhookFont(25).draw(g2d, 100, HEIGHT / 2 - 50, "Welcome to"); 
-			new SkyhookFont(50).draw(g2d, (WIDTH - 300) / 2, HEIGHT / 2 - 75, "Arcadia");
-			new SkyhookFont(25).draw(g2d, 250, HEIGHT / 2 + 45, "A Virtual Arcade Console");
+			g.setColor(Color.RED);
+			U.draw(g, (512 - 40) / 2 - 180, (128 - 40) / 2 + 30, 40, 40);
+			R.draw(g, (512 - 40) / 2 - 120, (128 - 40) / 2 + 30, 40, 40);
+			D.draw(g, (512 - 40) / 2 -  60, (128 - 40) / 2 + 30, 40, 40);
+			L.draw(g, (512 - 40) / 2 -   0, (128 - 40) / 2 + 30, 40, 40);
+			A.draw(g, (512 - 40) / 2 +  60, (128 - 40) / 2 + 30, 40, 40);
+			B.draw(g, (512 - 40) / 2 + 120, (128 - 40) / 2 + 30, 40, 40);
+			C.draw(g, (512 - 40) / 2 + 180, (128 - 40) / 2 + 30, 40, 40);
 			
-			g2d.setColor(Color.RED);
-			U.draw(g2d, (WIDTH - 100) / 2 - 360, HEIGHT - 150, 100, 100);
-			R.draw(g2d, (WIDTH - 100) / 2 - 240, HEIGHT - 150, 100, 100);
-			D.draw(g2d, (WIDTH - 100) / 2 - 120, HEIGHT - 150, 100, 100);
-			L.draw(g2d, (WIDTH - 100) / 2      , HEIGHT - 150, 100, 100);
-			A.draw(g2d, (WIDTH - 100) / 2 + 120, HEIGHT - 150, 100, 100);
-			B.draw(g2d, (WIDTH - 100) / 2 + 240, HEIGHT - 150, 100, 100);
-			C.draw(g2d, (WIDTH - 100) / 2 + 360, HEIGHT - 150, 100, 100);
+			g.setColor(new Color(0.0f, 0.0f, 0.0f, 0.50f));
+			g.fillRect(0, 0, 512, 128);
+			
+			g.setColor(Color.RED);
+			new SkyhookFont(25).draw(g, (512 - 150) / 2, (128 - 64) / 2, "Arcadia");
 		}
 		
 		this.slides = new SelectionList<Slide>();
@@ -79,7 +80,7 @@ public class IntroGame extends Game {
 	
 	}
 	
-	public void tick(Graphics2D g2d, Input i, Sound s) {
+	public void tick(Graphics2D g2d, Input p1, Input p2, Sound s) {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON  );
     	g2d.setRenderingHint(RenderingHints.KEY_RENDERING,    RenderingHints.VALUE_RENDER_QUALITY);
 
@@ -87,10 +88,10 @@ public class IntroGame extends Game {
 		g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
 		ticks += 1;
-		selection.current().tick(g2d, i, s);
+		selection.current().tick(g2d, p1, p2, s);
 		
-		if(ticks > 15 && i.pressed(R)) { selection.next();     ticks = 0; }
-		if(ticks > 15 && i.pressed(L)) { selection.previous(); ticks = 0; }
+		if(ticks > 15 && p1.pressed(R)) { selection.next();     ticks = 0; }
+		if(ticks > 15 && p1.pressed(L)) { selection.previous(); ticks = 0; }
 		
 		pulse.tick(0.025);
 		
@@ -103,8 +104,8 @@ public class IntroGame extends Game {
 		R.draw(g2d, WIDTH -  50, HEIGHT - 50, 30, 30);
 	}
 	
-	public Image cover() { 
-		return cover;
+	public Image banner() { 
+		return banner;
 	}
 	
 	public static void main(String[] args) {
@@ -116,7 +117,7 @@ public class IntroGame extends Game {
 		protected final SkyhookFont mFont = new SkyhookFont(25);
 		protected final SkyhookFont sFont = new SkyhookFont(15);
 		
-		public abstract void tick(Graphics2D g2d, Input i, Sound s);
+		public abstract void tick(Graphics2D g2d, Input p1, Input p2, Sound s);
 		
 		public void standard(Graphics2D g2d, String header, String... bullets) {
 			Point2D point = new Point2D.Double(50, 150);
@@ -131,7 +132,7 @@ public class IntroGame extends Game {
 	}
 	
 	private class WelcomeSlide extends Slide {
-		public void tick(Graphics2D g2d, Input i, Sound s) {
+		public void tick(Graphics2D g2d, Input p1, Input p2, Sound s) {
 			g2d.setColor(Color.RED);
 			sFont.draw(g2d, 50, 30, "Hiebel Productions");
 			sFont.draw(g2d, WIDTH - 35 * 14 - 50, 30, "sponsored by Husky Game Development");
@@ -147,7 +148,7 @@ public class IntroGame extends Game {
 			"To encourage creativity through\nrestrictive constraints\n"
 		};
 	
-		public void tick(Graphics2D g2d, Input i, Sound s) {
+		public void tick(Graphics2D g2d, Input p1, Input p2, Sound s) {
 			standard(g2d, "Goals", bullets);
 		}
 	}
@@ -161,7 +162,7 @@ public class IntroGame extends Game {
 			"Simple Audio (8- or 16-bit Sampled)\n"
 		};
 	
-		public void tick(Graphics2D g2d, Input i, Sound s) {
+		public void tick(Graphics2D g2d, Input p1, Input p2, Sound s) {
 			standard(g2d, "What Is Arcadia?", bullets);
 		}
 	}
@@ -172,7 +173,7 @@ public class IntroGame extends Game {
 			"General Purpose\n",
 		};
 	
-		public void tick(Graphics2D g2d, Input i, Sound s) {
+		public void tick(Graphics2D g2d, Input p1, Input p2, Sound s) {
 			standard(g2d, "What Isn't Arcadia?", bullets);
 		}
 	}
@@ -185,7 +186,7 @@ public class IntroGame extends Game {
 			"!\"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~",
 		};
 	
-		public void tick(Graphics2D g2d, Input i, Sound s) {
+		public void tick(Graphics2D g2d, Input p1, Input p2, Sound s) {
 			g2d.setColor(Color.RED);
 		
 			lFont.draw(g2d, 50, 50, "Skyhook Mono");
@@ -197,7 +198,7 @@ public class IntroGame extends Game {
 	}
 	
 	private class GoodbyeSlide extends Slide {
-		public void tick(Graphics2D g2d, Input i, Sound s) {
+		public void tick(Graphics2D g2d, Input p1, Input p2, Sound s) {
 			g2d.setColor(Color.RED);
 			lFont.draw(g2d, 50, HEIGHT / 2 - 20, "Have Fun!");
 			sFont.draw(g2d, 50, HEIGHT / 2 - 50, "Thank You, and");  

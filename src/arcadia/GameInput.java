@@ -10,11 +10,11 @@ public class GameInput implements Input {
 		this.buttons = EnumSet.noneOf(Button.class);
 	}
 	
-	public GameInput(Set<Integer> pressed) {
+	public GameInput(Set<Integer> pressed, Map<Button, Integer> keycodes) {
 		this();
 		
 		for(Button button : Button.values()) {
-			if(pressed.contains(keycode(button))) { buttons.add(button); }
+			if(pressed.contains(keycodes.get(button))) { buttons.add(button); }
 		}
 	}
 	
@@ -22,19 +22,27 @@ public class GameInput implements Input {
 		return buttons.contains(button); 
 	}
 	
-	private static final Map<Button, Integer> keycodes = new HashMap<>();
+	public static final Map<Button, Integer> p1keycodes = new HashMap<>();
 	static {
-		keycodes.put(Button.L, KeyEvent.VK_LEFT  );
-		keycodes.put(Button.R, KeyEvent.VK_RIGHT );
-		keycodes.put(Button.U, KeyEvent.VK_UP    );
-		keycodes.put(Button.D, KeyEvent.VK_DOWN  );
-		keycodes.put(Button.A, KeyEvent.VK_Z     );
-		keycodes.put(Button.B, KeyEvent.VK_X     );
-		keycodes.put(Button.C, KeyEvent.VK_C     );
-		keycodes.put(Button.S, KeyEvent.VK_ESCAPE);
+		p1keycodes.put(Button.L, KeyEvent.VK_A         );
+		p1keycodes.put(Button.R, KeyEvent.VK_D         );
+		p1keycodes.put(Button.U, KeyEvent.VK_W         );
+		p1keycodes.put(Button.D, KeyEvent.VK_S         );
+		p1keycodes.put(Button.A, KeyEvent.VK_BACK_QUOTE);
+		p1keycodes.put(Button.B, KeyEvent.VK_1         );
+		p1keycodes.put(Button.C, KeyEvent.VK_2         );
+		p1keycodes.put(Button.S, KeyEvent.VK_ESCAPE    );
 	}
 	
-	public static int keycode(Button button) {
-		return keycodes.get(button);
+	public static final Map<Button, Integer> p2keycodes = new HashMap<>();
+	static {
+		p2keycodes.put(Button.L, KeyEvent.VK_LEFT  );
+		p2keycodes.put(Button.R, KeyEvent.VK_RIGHT );
+		p2keycodes.put(Button.U, KeyEvent.VK_UP    );
+		p2keycodes.put(Button.D, KeyEvent.VK_DOWN  );
+		p2keycodes.put(Button.A, KeyEvent.VK_COMMA );
+		p2keycodes.put(Button.B, KeyEvent.VK_PERIOD);
+		p2keycodes.put(Button.C, KeyEvent.VK_SLASH );
+		p2keycodes.put(Button.S, KeyEvent.VK_ESCAPE);
 	}
 }

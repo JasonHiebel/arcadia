@@ -4,6 +4,7 @@ import arcadia.*;
 import arcadia.util.*;
 
 import intro.IntroGame;
+import balance.BalanceGame;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -108,6 +109,6 @@ public class Arcadia extends JPanel implements KeyListener, Runnable {
 	}
 	
 	public static void main(String[] args) {
-		Arcadia.display(new Arcadia(new Game[] { new IntroGame(), new IntroGame(), new IntroGame() }));
+		Arcadia.display(new Arcadia(new Game[] { new IntroGame(), new BalanceGame(), new IntroGame() }));
 	}
 }

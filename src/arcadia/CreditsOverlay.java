@@ -30,7 +30,7 @@ public class CreditsOverlay extends Overlay {
 	}
 	
 	public synchronized void update(Set<Integer> pressed) {
-		GameInput input = new GameInput(pressed);
+		GameInput input = new GameInput(pressed, GameInput.p1keycodes);
 		if(input.pressed(S)) { overlays.remove(); }
 	}
 		

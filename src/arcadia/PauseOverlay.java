@@ -2,13 +2,12 @@ package arcadia;
 
 import arcadia.util.*;
 import static arcadia.Game.*;
+import static arcadia.Button.*;
 
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
-
-import static arcadia.Button.*;
 
 /**
  *
@@ -32,10 +31,10 @@ public class PauseOverlay extends Overlay {
 	}
 	
 	public synchronized void update(Set<Integer> pressed) {
-		GameInput input = new GameInput(pressed);
+		GameInput input = new GameInput(pressed, GameInput.p1keycodes);
 		
 		if(input.pressed(A)) {
-			pressed.remove(GameInput.keycode(A));
+			pressed.remove(GameInput.p1keycodes.get(A));
 			
 			if(!quit) { overlays.remove(); }
 			else      { overlays.remove(); overlays.remove(); }

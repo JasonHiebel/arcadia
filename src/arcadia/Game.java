@@ -7,7 +7,7 @@ public abstract class Game {
 	public static final int WIDTH  = 1024;
 	public static final int HEIGHT = 576;
 
-	public abstract void tick(Graphics2D graphics, Input input, Sound sound);
+	public abstract void tick(Graphics2D g, Input p1, Input p2, Sound s);
 	public abstract void reset();
-	public abstract Image cover();
+	public abstract Image banner();
 }

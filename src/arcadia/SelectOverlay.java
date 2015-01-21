@@ -50,21 +50,22 @@ public class SelectOverlay extends Overlay {
 	public synchronized void update(Set<Integer> pressed) {
 		if(tweener != null) { 
 			if(tweener.isComplete()) { tweener = null; }
-			else { tweener.tick(0.05); }
+			else { tweener.tick(0.25); }
 		}
 		else {
-			GameInput input = new GameInput(pressed);
+			GameInput input = new GameInput(pressed, GameInput.p1keycodes);
 			if(input.pressed(S)) { overlays.add(new CreditsOverlay(overlays)); }
 				
-			if(input.pressed(L) && selection.hasPrevious()) { 
+			if(input.pressed(U) && selection.hasPrevious()) { 
 				selection.previous(); 
-				tweener = new LinearTweener(-864 - 40, 0); }
-			if(input.pressed(R) && selection.hasNext()) { 
+				tweener = new LinearTweener(-128 - 20, 0); }
+			if(input.pressed(D) && selection.hasNext()) { 
 				selection.next();
-				tweener = new LinearTweener(+864 + 40, 0);
+				tweener = new LinearTweener(+128 + 20, 0);
 			}
 			if(input.pressed(A)) {
 				pressed.remove(KeyEvent.VK_Z);
+				selection.current().reset();
 				overlays.add(new GameOverlay(overlays, selection.current()));
 			}
 		}
@@ -81,26 +82,28 @@ public class SelectOverlay extends Overlay {
 		Selection<Game> prev = selection.copy();
 		window.add(0, prev.previous());
 		window.add(0, prev.previous());
+		window.add(0, prev.previous());
 		
 		Selection<Game> next = selection.copy();
 		window.add(next.next());
 		window.add(next.next());
+		window.add(next.next());
 		
 		
-		final int xBase   = (WIDTH - 864) / 2;
-		final int xOffset = 864 + 40;
+		final int yBase   = (HEIGHT - 128) / 2;
+		final int yOffset = 128 + 20;
 		
 		
-		for(int x = 0; x < 5; x += 1) {
-			int xPos = xBase + (x - 2) * xOffset;
-			if(tweener != null) { xPos += tweener.value(); }
+		for(int y = 0; y < 7; y += 1) {
+			int yPos = yBase + (y - 3) * yOffset;
+			if(tweener != null) { yPos += tweener.value(); }
 			
-			Game g = window.get(x);
+			Game g = window.get(y);
 			if(g != null) {
 				g2d.drawImage(
-					g.cover(),
-					xPos, 20, xPos + 864, 20 + 486,
-					0, 0, WIDTH, HEIGHT,
+					g.banner(),
+					(WIDTH - 512) / 2, yPos, (WIDTH + 512) / 2, yPos + 128,
+					0, 0, 512, 128,
 					null
 				);
 			}
@@ -111,15 +114,15 @@ public class SelectOverlay extends Overlay {
 		g2d.setColor(new Color(0.0f, (float)pulse.value(), (float)pulse.value(), 1.0f));
 		g2d.setStroke(new BasicStroke(2.0f));
 		if(!selection.hasPrevious()) { g2d.setColor(new Color(0.0f, 0.3f, 0.3f, 1.0f)); }
-		L.draw(g2d, 420, HEIGHT - 50, 30, 30);
+		U.draw(g2d, (WIDTH - 512) / 2 - 50, (HEIGHT - 30) / 2 - 50, 30, 30);
 		
 		g2d.setColor(new Color(0.0f, (float)pulse.value(), (float)pulse.value(), 1.0f));
 		g2d.setStroke(new BasicStroke(2.0f));
 		if(!selection.hasNext()) { g2d.setColor(new Color(0.0f, 0.3f, 0.3f, 1.0f)); }
-		R.draw(g2d, WIDTH - 450, HEIGHT - 50, 30, 30);
+		D.draw(g2d, (WIDTH - 512) / 2 - 50, (HEIGHT - 30) / 2 + 50, 30, 30);
 		
 		g2d.setColor(new Color(0.0f, (float)pulse.value(), (float)pulse.value(), 1.0f));
-		A.draw(g2d, (WIDTH - 30) / 2, HEIGHT - 50, 30, 30);
+		A.draw(g2d, (WIDTH - 512) / 2 - 50, (HEIGHT - 30) / 2, 30, 30);
 		S.draw(g2d, WIDTH - 50, HEIGHT - 50, 30, 30);
 		
 		g2d.setColor(Color.CYAN);
